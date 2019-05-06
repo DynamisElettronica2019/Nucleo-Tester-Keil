@@ -65,7 +65,7 @@ uint16_t timer3_counter1 = 0;
 uint16_t timer3_counter2 = 0;
 char receivedOk = 0;
 uint32_t emptyMailboxes = 2;
-uint8_t rxData[10];
+extern uint8_t rxData[];
 uint8_t syncMsg = 1;
 /* USER CODE END 0 */
 
@@ -108,15 +108,13 @@ int main(void)
 	CAN1_Start();
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_11, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_15, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_14, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_13, GPIO_PIN_SET);
+
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
 	
 	//CAN1_Send_Nucleo_L4_Packet();
 	HAL_Delay(250);
-	CAN1_Send_Nucleo_L4_Packet();
+	//CAN1_Send_Nucleo_L4_Packet();
 	HAL_UART_Receive_IT(&hlpuart1, rxData, 1);
   /* USER CODE END 2 */
 
@@ -124,11 +122,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */  
 	while (1)
   {
-//			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
-//			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);
-//			HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_15);
-//			HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_14);
-//			HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_13);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -217,13 +210,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			
 			if(timer2_counter1 >= 500)
 			{
-				CAN1_Send_Nucleo_L4_Packet();
-        /* Toggle LED */
-//				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
-//				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);
-//				HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_15);
-//				HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_14);
-//				HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_13);
+				//CAN1_Send_Nucleo_L4_Packet();
 				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14);
 				receivedOk = 1;
 				timer2_counter1 = 0;
@@ -239,7 +226,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				HAL_UART_Transmit_IT(&hlpuart1, &syncMsg, 1);
 				timer3_counter1 = 0;
 			}
-			if(timer3_counter2 >= 500)
+			if(timer3_counter2 >= 10)
 			{
 				//HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14);
 				timer3_counter2 = 0;

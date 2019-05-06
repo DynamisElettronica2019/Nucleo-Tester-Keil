@@ -21,6 +21,9 @@
 #include "can.h"
 
 /* USER CODE BEGIN 0 */
+
+#define NUCLEO_L4_ID ((uint16_t)(500))
+
 static CAN_FilterTypeDef CAN_Filter_Config;
 static CAN_TxHeaderTypeDef nucleo_L4_Packet_Header;
 static CAN_RxHeaderTypeDef CAN_Received_0_Message_Header;
@@ -31,8 +34,13 @@ static uint8_t nucleo_L4_Packet_Data[8];
 extern char receivedOk;
 extern uint32_t emptyMailboxes;
 //indirizzo CAN nucleo L4 (provvisorio per test)
-#define NUCLEO_L4_ID ((uint16_t)(500))
 extern uint8_t canPacket[10];
+uint8_t canMsg[8];
+extern uint8_t rxData[];
+
+
+
+
 /* USER CODE END 0 */
 
 CAN_HandleTypeDef hcan1;
@@ -138,8 +146,7 @@ extern void CAN1_Start(void)
 
 void CAN1_FilterSetup(void)
 {
-	
- 
+
 	/*
   Mittente: NUCLEO F7
 	IDs = 0011111xxxx
@@ -151,7 +158,7 @@ void CAN1_FilterSetup(void)
   CAN_Filter_Config.FilterScale = CAN_FILTERSCALE_32BIT;
 	CAN_Filter_Config.FilterIdHigh = (0x1F0 << 5);
   CAN_Filter_Config.FilterIdLow = 0x0000;
-  CAN_Filter_Config.FilterMaskIdHigh = (0x7F0  << 5);
+  CAN_Filter_Config.FilterMaskIdHigh = (0x000  << 5);
   CAN_Filter_Config.FilterMaskIdLow = 0x0000;
 	CAN_Filter_Config.FilterFIFOAssignment = CAN_RX_FIFO0;
   CAN_Filter_Config.FilterActivation = ENABLE;	
@@ -161,7 +168,7 @@ void CAN1_FilterSetup(void)
 	
 }
 
-extern void CAN1_Send_Nucleo_L4_Packet(void)
+void CAN1_Send_Nucleo_L4_Packet(void)
 {
 	uint32_t nucleo_L4_Packet_Mailbox;
 	nucleo_L4_Packet_Header.StdId = NUCLEO_L4_ID;
@@ -177,6 +184,57 @@ extern void CAN1_Send_Nucleo_L4_Packet(void)
   nucleo_L4_Packet_Data[5] = canPacket[5];
 	nucleo_L4_Packet_Data[6] = canPacket[6];
   nucleo_L4_Packet_Data[7] = canPacket[7];
+	HAL_CAN_AddTxMessage(&hcan1, &nucleo_L4_Packet_Header, nucleo_L4_Packet_Data, &nucleo_L4_Packet_Mailbox);
+}
+
+void CAN1_Send_Nucleo_Command_L4_Packet(uint16_t ID)
+{
+	uint32_t nucleo_L4_Packet_Mailbox;
+	nucleo_L4_Packet_Header.StdId = ID;
+  nucleo_L4_Packet_Header.RTR = CAN_RTR_DATA;
+  nucleo_L4_Packet_Header.IDE = CAN_ID_STD;
+  nucleo_L4_Packet_Header.DLC = 8;
+  nucleo_L4_Packet_Header.TransmitGlobalTime = DISABLE;
+  nucleo_L4_Packet_Data[0] = rxData[2];
+  nucleo_L4_Packet_Data[1] = rxData[3];
+  nucleo_L4_Packet_Data[2] = rxData[4];
+  nucleo_L4_Packet_Data[3] = rxData[5];
+  nucleo_L4_Packet_Data[4] = 0;
+  nucleo_L4_Packet_Data[5] = 0;
+	nucleo_L4_Packet_Data[6] = 0;
+  nucleo_L4_Packet_Data[7] = 0;
+	for(int i=0; i <= 7; i++)
+		canMsg[i] = nucleo_L4_Packet_Data[i];
+	HAL_CAN_AddTxMessage(&hcan1, &nucleo_L4_Packet_Header, nucleo_L4_Packet_Data, &nucleo_L4_Packet_Mailbox);
+}
+
+void CAN1_Send_Nucleo_Values_L4_Packet(uint16_t ID)
+{
+	uint32_t nucleo_L4_Packet_Mailbox;
+	int i;
+	nucleo_L4_Packet_Header.StdId = ID;
+  nucleo_L4_Packet_Header.RTR = CAN_RTR_DATA;
+  nucleo_L4_Packet_Header.IDE = CAN_ID_STD;
+  nucleo_L4_Packet_Header.DLC = 8;
+  nucleo_L4_Packet_Header.TransmitGlobalTime = DISABLE;
+	for(i=0; i <= 7; i++)
+		nucleo_L4_Packet_Data[i] = 0;
+	switch (ID)
+	{
+		case 513:
+			nucleo_L4_Packet_Data[0] = rxData[1];
+			break;
+		case 773:
+			nucleo_L4_Packet_Data[1] = rxData[0];
+			break;
+		case 1000:
+			nucleo_L4_Packet_Data[1] = rxData[2];
+			break;
+		default:
+			break;
+	}
+	for(i=0; i <= 7; i++)
+		canMsg[i] = nucleo_L4_Packet_Data[i];
 	HAL_CAN_AddTxMessage(&hcan1, &nucleo_L4_Packet_Header, nucleo_L4_Packet_Data, &nucleo_L4_Packet_Mailbox);
 }
 

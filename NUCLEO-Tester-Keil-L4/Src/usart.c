@@ -23,12 +23,17 @@
 /* USER CODE BEGIN 0 */
 #include "string.h"
 #include "can.h"
-#define DIM 10
+#define DIM 6
 char header[] = "hdr";
 char temp[] = {0, 0, 0};
-extern uint8_t rxData[DIM];
+uint8_t rxData[DIM];
 uint8_t readData = 0;
+uint8_t readValues = 0;
+uint8_t readCommand = 0;
 uint8_t canPacket[10];
+uint16_t idCan = 0;
+
+
 /* USER CODE END 0 */
 
 UART_HandleTypeDef hlpuart1;
@@ -126,40 +131,35 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 /* USER CODE BEGIN 1 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	//__disable_irq();
+	if(readCommand == 1)
+	{
+		readCommand = 0;
+		idCan = 0;
+		idCan = rxData[0] << 8 | rxData[1];
+		CAN1_Send_Nucleo_Command_L4_Packet(idCan);
+	}
+	if(readValues == 1)
+	{
+		readValues = 0;
+		CAN1_Send_Nucleo_Values_L4_Packet((uint16_t)513);
+		CAN1_Send_Nucleo_Values_L4_Packet((uint16_t)773);
+		CAN1_Send_Nucleo_Values_L4_Packet((uint16_t)1000);
+	}
 	
-	if(!readData)
-	{	
-		temp[0] = temp[1];
-		temp[1] = temp[2];
-		temp[2] = rxData[0];
-	}
-	else
+	if(rxData[0] == 65)
 	{
-		readData = 0;
-		
-		for(int i=0; i<DIM; i++)
-		{
-			canPacket[i] = rxData[i];			
-		}
-//			rtU.UART_debug[i] = rxData[i];
-//			flag = 1;
-		//HAL_GPIO_TogglePin(GPIOB, BluePin_Pin);
-//		GCU_Model_genCode_step2();
-	}
-	if(!strncmp(header, temp, 3))
-	{
-		readData = 1;
+		//i 6 valori successivi vanno letti
 		HAL_UART_Receive_IT(&hlpuart1, rxData, DIM);
+		readValues = 1;
+	}
+	else if(rxData[0] == 66)
+	{
+		HAL_UART_Receive_IT(&hlpuart1, rxData, DIM);
+		readCommand = 1;
 		
-		for(int i = 0; i<3; i++)
-			temp[i] = 0;
 	}
 	else HAL_UART_Receive_IT(&hlpuart1, rxData, 1);
 	
-	//HAL_UART_Transmit(&hlpuart1, rxData, 4, 10);
-	
-	 //__enable_irq();
 }
 /* USER CODE END 1 */
 

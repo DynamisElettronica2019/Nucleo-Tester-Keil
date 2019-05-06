@@ -151,17 +151,12 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>canPacket,0x0A</ItemText>
+          <ItemText>rxData,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>huart3,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>2</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>rxData,0x0A</ItemText>
+          <ItemText>canMsg,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -169,6 +164,11 @@
           <count>0</count>
           <WinNumber>2</WinNumber>
           <ItemText>\\NUCLEO_Tester_Keil_L4\../Src/main.c\rxData</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>nucleo_L4_Packet_Data</ItemText>
         </Ww>
       </WatchWindow2>
       <Tracepoint>
@@ -288,7 +288,7 @@
       <GroupNumber>2</GroupNumber>
       <FileNumber>5</FileNumber>
       <FileType>1</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>../Src/usart.c</PathWithFileName>

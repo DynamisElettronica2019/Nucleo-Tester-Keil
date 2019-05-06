@@ -43,6 +43,8 @@ void MX_CAN1_Init(void);
 extern void CAN1_Start(void);
 extern void CAN1_Send_Nucleo_L4_Packet(void);
 void CAN1_FilterSetup(void);
+extern void CAN1_Send_Nucleo_Command_L4_Packet(uint16_t ID);
+extern void CAN1_Send_Nucleo_Values_L4_Packet(uint16_t ID);
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan);
 
