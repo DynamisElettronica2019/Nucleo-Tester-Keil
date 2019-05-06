@@ -112,6 +112,7 @@ int main(void)
 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_14, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_13, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
 	
 	//CAN1_Send_Nucleo_L4_Packet();
 	HAL_Delay(250);
@@ -120,7 +121,8 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */  while (1)
+  /* USER CODE BEGIN WHILE */  
+	while (1)
   {
 //			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
 //			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);
@@ -217,11 +219,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			{
 				CAN1_Send_Nucleo_L4_Packet();
         /* Toggle LED */
-				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
-				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);
-				HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_15);
-				HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_14);
-				HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_13);
+//				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_11);
+//				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);
+//				HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_15);
+//				HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_14);
+//				HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_13);
+				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14);
 				receivedOk = 1;
 				timer2_counter1 = 0;
 			}	
@@ -238,7 +241,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			}
 			if(timer3_counter2 >= 500)
 			{
-				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14);
+				//HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14);
 				timer3_counter2 = 0;
 			}
 				

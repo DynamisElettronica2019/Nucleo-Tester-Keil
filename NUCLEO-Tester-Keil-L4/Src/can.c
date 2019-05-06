@@ -189,11 +189,11 @@ void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan)
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &CAN_Received_0_Message_Header, CAN_Received_0_Message_Data); 
-	if(CAN_Received_0_Message_Data[0] == 6)
-	{
-		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14);
+	//if(CAN_Received_0_Message_Data[0] == 6)
+	//{
+		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
 		receivedOk = 1;
-	}
+	//}
 }
 
 void CAN1_UnPacking(void)
